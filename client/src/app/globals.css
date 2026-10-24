@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8f9fc;
+  --foreground: #1e293b;
+  --navy-primary: #23225c;
+  --navy-hover: #191845;
+  --navy-dark: #111030;
+  --lavender-soft: #eef0fc;
+  --lavender-accent: #6b6fea;
+  --card-bg: #ffffff;
+  --card-border: rgba(226, 232, 240, 0.8);
+  --card-shadow: 0 12px 35px -8px rgba(35, 34, 92, 0.07);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Atmospheric Glow Background */
+.bg-hotel-glow {
+  background-color: #f8f9fc;
+  background-image: 
+    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(107, 111, 234, 0.09), transparent 75%),
+    radial-gradient(ellipse 70% 50% at 80% 30%, rgba(35, 34, 92, 0.04), transparent 60%);
+}
+
+/* Glassmorphism & Elevated Elements */
+.glass-nav {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.floating-search-card {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 20px 40px -10px rgba(35, 34, 92, 0.12);
+  border-radius: 24px;
+}
+
+.hotel-card {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.75);
+  border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.25s ease-in-out;
+}
+
+.hotel-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -6px rgba(35, 34, 92, 0.12);
+  border-color: rgba(107, 111, 234, 0.3);
+}
+
+/* Custom Navy Button Class */
+.btn-navy {
+  background-color: #23225c;
+  color: #ffffff;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-navy:hover {
+  background-color: #191845;
+  box-shadow: 0 10px 20px -5px rgba(35, 34, 92, 0.35);
+}
+
+/* Scrollbar polish */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

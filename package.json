@@ -1,0 +1,21 @@
+{
+  "name": "hotel-royal-heights-monorepo",
+  "version": "1.0.0",
+  "description": "Production-ready website and booking platform for Hotel Royal Heights, Rishikesh",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"CLIENT,SERVER\" -c \"cyan,magenta\" \"npm run dev --workspace=client\" \"npm run dev --workspace=server\"",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:server": "npm run dev --workspace=server",
+    "build:client": "npm run build --workspace=client",
+    "seed": "npm run seed --workspace=server",
+    "start": "npm run start --workspace=client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

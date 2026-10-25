@@ -1,88 +1,88 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import siteConfig from "@/data/site";
 
 export default function FAQSection() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
-  const faqs = [
-    {
-      q: "What are the standard Check-in and Check-out timings?",
-      a: "Our standard check-in is at 12:00 PM and check-out is at 11:00 AM. If you arrive early or have a later departure, our reception team will gladly store your luggage securely and grant access to public lounges.",
-    },
-    {
-      q: "How far is Hotel Royal Heights from the Ganges River and Laxman Jhula?",
-      a: "We are nestled in Tapovan, Rishikesh, situated just 1.5 km (a picturesque 10-minute walk or 3-minute ride) from Laxman Jhula and the sacred riverside ghats.",
-    },
-    {
-      q: "Is complimentary parking available for cars and motorcycles?",
-      a: "Yes! We provide on-site secure private parking for our guests free of charge throughout the duration of your stay.",
-    },
-    {
-      q: "Can the hotel arrange River Rafting, Scooters, and Ganga Aarti visits?",
-      a: "Absolutely. Our front desk concierge coordinates certified Shivpuri white-water rafting, scooter rentals, airport transfers from Dehradun Jolly Grant (DED), and private taxis for the evening Triveni Ghat Aarti.",
-    },
-    {
-      q: "What is the cancellation and rescheduling policy for direct bookings?",
-      a: "Bookings made directly on our website enjoy our most flexible terms: free cancellation or date modification up to 48 hours before your scheduled arrival date.",
-    },
-    {
-      q: "What payment options are accepted?",
-      a: "We support seamless online payments via UPI, Credit/Debit cards, Net Banking through Razorpay test/live gateway, as well as 'Pay at Hotel' upon arrival.",
-    },
-  ];
+  const toggleFAQ = (idx: number) => {
+    setOpenIdx(openIdx === idx ? null : idx);
+  };
 
   return (
-    <section className="py-16 lg:py-24 bg-white/60 border-t border-slate-200/60">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <span className="inline-block px-3.5 py-1 rounded-full bg-[#EEF0FC] text-[#23225C] text-xs font-bold uppercase tracking-wider mb-3">
-            Questions & Answers
+    <section id="faq" className="py-14 md:py-20 bg-white scroll-mt-20">
+      <div className="max-w-[1200px] mx-auto px-5 md:px-8">
+        
+        {/* Standard Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.5 }}
+          className="text-center max-w-2xl mx-auto mb-10"
+        >
+          <span className="text-xs font-bold uppercase tracking-wider text-[#C9A24B] mb-2 block">
+            COMMON QUESTIONS
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold font-serif text-[#111030] tracking-tight">
+          <h2 className="text-[clamp(1.9rem,3.2vw,2.6rem)] font-semibold font-serif text-[#1B1B4B] leading-tight">
             Frequently Asked Questions
           </h2>
-          <p className="text-sm sm:text-base text-slate-500 mt-2">
-            Everything you need to know about staying at Hotel Royal Heights Rishikesh.
+          <p className="text-[15px] sm:text-base text-slate-600 mt-2 font-normal">
+            Helpful answers regarding direct check-ins, river transfers, meals, and bookings.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="space-y-3.5">
-          {faqs.map((faq, idx) => {
+        {/* 6 Questions - Single column max-w-3xl */}
+        <div className="max-w-3xl mx-auto space-y-4">
+          {siteConfig.faqs.map((faq, idx) => {
             const isOpen = openIdx === idx;
             return (
-              <div
-                key={idx}
-                className="hotel-card overflow-hidden transition-all duration-200"
+              <motion.div
+                key={faq.question}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.4, delay: idx * 0.05 }}
+                className="bg-[#FAF9F7] rounded-2xl border border-slate-200/60 overflow-hidden shadow-sm"
               >
                 <button
                   type="button"
-                  onClick={() => setOpenIdx(isOpen ? null : idx)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4 focus:outline-none"
+                  onClick={() => toggleFAQ(idx)}
+                  className="w-full py-4 px-6 text-left flex items-center justify-between gap-4 font-sans font-semibold text-[16px] text-[#1B1B4B] hover:text-[#C9A24B] transition-colors"
                   aria-expanded={isOpen}
                 >
-                  <span className="font-bold text-sm sm:text-base text-slate-900">
-                    {faq.q}
-                  </span>
+                  <span className="leading-snug">{faq.question}</span>
                   <div
-                    className={`w-7 h-7 rounded-full bg-[#EEF0FC] flex items-center justify-center text-[#23225C] shrink-0 transition-transform duration-200 ${
-                      isOpen ? "rotate-180 bg-[#23225C] text-white" : ""
+                    className={`w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-slate-200/80 transition-transform duration-300 ${
+                      isOpen ? "rotate-180 bg-[#1B1B4B] text-white" : "text-slate-600"
                     }`}
                   >
                     <ChevronDown className="w-4 h-4" />
                   </div>
                 </button>
 
-                {isOpen && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                    >
+                      <div className="px-6 pb-5 pt-1 text-[14px] text-slate-600 leading-relaxed border-t border-slate-200/40">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             );
           })}
         </div>
+
       </div>
     </section>
   );

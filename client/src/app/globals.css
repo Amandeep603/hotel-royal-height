@@ -1,79 +1,102 @@
 @import "tailwindcss";
 
+@theme {
+  --color-navy-primary: #1b1b4b;
+  --color-navy-hover: #121235;
+  --color-navy-dark: #0d0d26;
+  --color-gold-accent: #c9a24b;
+  --color-gold-hover: #b8923d;
+  --color-gold-soft: #fdf8ee;
+  --color-offwhite: #faf9f7;
+  --font-sans: var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: var(--font-playfair), Georgia, serif;
+}
+
 :root {
-  --background: #f8f9fc;
-  --foreground: #1e293b;
-  --navy-primary: #23225c;
-  --navy-hover: #191845;
-  --navy-dark: #111030;
-  --lavender-soft: #eef0fc;
-  --lavender-accent: #6b6fea;
-  --card-bg: #ffffff;
-  --card-border: rgba(226, 232, 240, 0.8);
-  --card-shadow: 0 12px 35px -8px rgba(35, 34, 92, 0.07);
+  --background: #faf9f7;
+  --foreground: #334155;
+  --navy-primary: #1b1b4b;
+  --navy-hover: #121235;
+  --gold-accent: #c9a24b;
+  --gold-hover: #b8923d;
+  --gold-soft: #fdf8ee;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px; /* Prevents headings from hiding under sticky navbar */
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: #faf9f7;
+  color: #475569;
   font-family: var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Atmospheric Glow Background */
+/* Subtle background atmospheric aura */
 .bg-hotel-glow {
-  background-color: #f8f9fc;
+  background-color: #faf9f7;
   background-image: 
-    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(107, 111, 234, 0.09), transparent 75%),
-    radial-gradient(ellipse 70% 50% at 80% 30%, rgba(35, 34, 92, 0.04), transparent 60%);
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(201, 162, 75, 0.05), transparent 70%),
+    radial-gradient(ellipse 70% 45% at 92% 18%, rgba(107, 111, 234, 0.05), transparent 60%),
+    radial-gradient(ellipse 65% 50% at 8% 45%, rgba(27, 27, 75, 0.03), transparent 65%);
 }
 
-/* Glassmorphism & Elevated Elements */
-.glass-nav {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-}
-
-.floating-search-card {
+/* Navigation Scrolled State */
+.glass-nav-scrolled {
   background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 20px 40px -10px rgba(35, 34, 92, 0.12);
-  border-radius: 24px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 20px -2px rgba(27, 27, 75, 0.06);
 }
 
+.glass-nav-transparent {
+  background: transparent;
+  border-bottom: 1px solid transparent;
+}
+
+/* Rounded Cards */
 .hotel-card {
   background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.75);
-  border-radius: 20px;
-  box-shadow: var(--card-shadow);
-  transition: all 0.25s ease-in-out;
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  box-shadow: 0 8px 30px -8px rgba(27, 27, 75, 0.05);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hotel-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px -6px rgba(35, 34, 92, 0.12);
-  border-color: rgba(107, 111, 234, 0.3);
+  box-shadow: 0 18px 40px -8px rgba(27, 27, 75, 0.1);
+  border-color: rgba(201, 162, 75, 0.35);
 }
 
-/* Custom Navy Button Class */
+/* Navy & Gold Buttons */
 .btn-navy {
-  background-color: #23225c;
+  background-color: #1b1b4b;
   color: #ffffff;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-navy:hover {
-  background-color: #191845;
-  box-shadow: 0 10px 20px -5px rgba(35, 34, 92, 0.35);
+  background-color: #121235;
+  box-shadow: 0 8px 20px -4px rgba(27, 27, 75, 0.35);
 }
 
-/* Scrollbar polish */
+.btn-gold {
+  background-color: #c9a24b;
+  color: #ffffff;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-gold:hover {
+  background-color: #b8923d;
+  box-shadow: 0 8px 20px -4px rgba(201, 162, 75, 0.4);
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
   background: #f1f5f9;

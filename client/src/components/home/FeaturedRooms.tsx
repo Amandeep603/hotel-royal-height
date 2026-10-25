@@ -2,280 +2,320 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Heart, 
   Users, 
   Maximize2, 
-  Wifi, 
-  Coffee, 
-  Wind, 
-  Star, 
+  MapPin, 
   Eye, 
-  Calendar,
-  Check
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  BedDouble,
+  ArrowRight
 } from "lucide-react";
-import hotelImages from "@/data/images";
+import WhatsAppIcon from "@/components/common/WhatsAppIcon";
+import siteConfig, { RoomItem } from "@/data/site";
 import { formatPrice } from "@/lib/utils";
 
-interface RoomCardData {
-  id: string;
-  slug: string;
-  title: string;
-  category: string;
-  tag: "Featured" | "Popular" | "Hot Deal" | "New";
-  tagColor: string;
-  price: number;
-  originalPrice: number;
-  taxes: number;
-  rating: number;
-  reviewsCount: number;
-  capacity: string;
-  size: string;
-  bed: string;
-  view: string;
-  image: string;
-  amenities: string[];
+interface FeaturedRoomsProps {
+  onOpenWhatsApp?: (roomTitle: string, price: number) => void;
+  onOpen360?: (roomTitle: string, image: string) => void;
 }
 
-export default function FeaturedRooms() {
-  const [wishlist, setWishlist] = useState<Record<string, boolean>>({});
+function RoomCard({
+  room,
+  onOpenWhatsApp,
+  onOpen360,
+}: {
+  room: RoomItem;
+  onOpenWhatsApp?: (title: string, price: number) => void;
+  onOpen360?: (title: string, image: string) => void;
+}) {
+  const [currentImgIndex, setCurrentImgIndex] = useState(0);
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
-  const toggleWishlist = (id: string, e: React.MouseEvent) => {
+  const prevImage = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setWishlist((prev) => ({ ...prev, [id]: !prev[id] }));
+    setCurrentImgIndex((prev) => (prev === 0 ? room.images.length - 1 : prev - 1));
   };
 
-  const rooms: RoomCardData[] = [
-    {
-      id: "1",
-      slug: "executive-ganga-view-suite",
-      title: "Executive Ganga View Suite",
-      category: "Luxury Suite",
-      tag: "Featured",
-      tagColor: "bg-[#23225C] text-white",
-      price: 3999,
-      originalPrice: 4999,
-      taxes: 480,
-      rating: 4.9,
-      reviewsCount: 142,
-      capacity: "2 Adults, 1 Child",
-      size: "360 sq.ft",
-      bed: "King Bed",
-      view: "River & Mountain View",
-      image: hotelImages.rooms.riverViewSuite.cover,
-      amenities: ["Private Balcony", "Free Wi-Fi", "Tea Maker", "Mountain Breeze"],
-    },
-    {
-      id: "2",
-      slug: "super-deluxe-mountain-balcony",
-      title: "Super Deluxe Mountain Balcony",
-      category: "Deluxe Collection",
-      tag: "Popular",
-      tagColor: "bg-[#6B6FEA] text-white",
-      price: 2899,
-      originalPrice: 3499,
-      taxes: 348,
-      rating: 4.8,
-      reviewsCount: 98,
-      capacity: "2 Adults",
-      size: "290 sq.ft",
-      bed: "Queen Bed",
-      view: "Valley Facing",
-      image: hotelImages.rooms.superDeluxe.cover,
-      amenities: ["Valley Balcony", "Smart TV", "Air Conditioning", "Room Service"],
-    },
-    {
-      id: "3",
-      slug: "deluxe-comfort-room",
-      title: "Deluxe Comfort Room",
-      category: "Standard Comfort",
-      tag: "Hot Deal",
-      tagColor: "bg-amber-600 text-white",
-      price: 2199,
-      originalPrice: 2799,
-      taxes: 264,
-      rating: 4.7,
-      reviewsCount: 76,
-      capacity: "2 Guests",
-      size: "240 sq.ft",
-      bed: "Double Bed",
-      view: "Tapovan Greens",
-      image: hotelImages.rooms.deluxe.cover,
-      amenities: ["High-speed Wi-Fi", "Geyser Shower", "Work Desk", "24/7 Power"],
-    },
-    {
-      id: "4",
-      slug: "royal-family-himalayan-suite",
-      title: "Royal Family Himalayan Suite",
-      category: "Family Special",
-      tag: "New",
-      tagColor: "bg-emerald-600 text-white",
-      price: 5499,
-      originalPrice: 6799,
-      taxes: 660,
-      rating: 5.0,
-      reviewsCount: 54,
-      capacity: "4 Adults, 2 Children",
-      size: "520 sq.ft",
-      bed: "2 King Beds",
-      view: "360° Himalayan View",
-      image: hotelImages.rooms.familySuite.cover,
-      amenities: ["Double Balcony", "Mini Fridge", "Living Area", "Rooftop Access"],
-    },
-  ];
+  const nextImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImgIndex((prev) => (prev === room.images.length - 1 ? 0 : prev + 1));
+  };
+
+  const handleWhatsApp = () => {
+    if (onOpenWhatsApp) {
+      onOpenWhatsApp(room.title, room.price);
+    } else {
+      const msg = encodeURIComponent(
+        `Hello Hotel Royal Heights, I would like to book the "${room.title}" (₹${room.price}/night). Please share date availability!`
+      );
+      window.open(`https://wa.me/${siteConfig.hotel.contact.whatsApp.replace(/[^0-9]/g, '')}?text=${msg}`, "_blank");
+    }
+  };
 
   return (
-    <section className="py-16 lg:py-24 bg-white/50 border-y border-slate-200/60">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Heading */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
-          <div>
-            <span className="inline-block px-3.5 py-1 rounded-full bg-[#EEF0FC] text-[#23225C] text-xs font-bold uppercase tracking-wider mb-3">
-              Accommodation
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-serif text-[#111030] tracking-tight">
-              Featured Rooms & Suites
-            </h2>
-            <p className="text-sm sm:text-base text-slate-500 mt-2 max-w-xl">
-              Each room is intentionally created with warm wooden finishes, crisp linen, private balconies, and scenic Himalayan backdrops.
-            </p>
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+      className="bg-white rounded-3xl overflow-hidden border border-slate-200/70 shadow-[0_8px_25px_-8px_rgba(27,27,75,0.06)] hover:shadow-[0_20px_45px_-10px_rgba(27,27,75,0.12)] transition-all flex flex-col h-full group"
+    >
+      {/* 1. Image with aspect-[4/3] and carousel */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 shrink-0">
+        <Image
+          src={room.images[currentImgIndex]}
+          alt={room.title}
+          fill
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+
+        {/* Badge (Top-Left) */}
+        <div className="absolute top-3.5 left-3.5 z-10">
+          <span className={`px-3 py-1 rounded-full text-[11px] font-bold shadow-sm backdrop-blur-md ${room.badgeColor}`}>
+            {room.badge}
+          </span>
+        </div>
+
+        {/* Heart Wishlist Button (Top-Right) */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            setIsWishlisted(!isWishlisted);
+          }}
+          className="absolute top-3.5 right-3.5 z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-slate-700 hover:text-rose-500 hover:bg-white shadow-md transition-all active:scale-90"
+          aria-label="Save to Wishlist"
+        >
+          <Heart
+            className={`w-4 h-4 transition-colors ${
+              isWishlisted ? "fill-rose-500 text-rose-500" : ""
+            }`}
+          />
+        </button>
+
+        {/* Carousel Arrow Controls */}
+        {room.images.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={prevImage}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={nextImage}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm"
+              aria-label="Next image"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </>
+        )}
+
+        {/* Carousel Dots */}
+        {room.images.length > 1 && (
+          <div className="absolute bottom-2.5 left-0 right-0 z-10 flex justify-center gap-1.5 pointer-events-none">
+            {room.images.map((_, i) => (
+              <span
+                key={i}
+                className={`w-1.5 h-1.5 rounded-full transition-all ${
+                  currentImgIndex === i ? "bg-white w-3.5" : "bg-white/50"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 2. Card Body */}
+      <div className="p-5 flex-1 flex flex-col justify-between">
+        <div>
+          {/* Title (single line, truncate) + Rating */}
+          <div className="flex items-start justify-between gap-2 mb-1">
+            <h3 className="font-semibold text-[17px] text-[#1B1B4B] group-hover:text-[#C9A24B] transition-colors truncate flex-1" title={room.title}>
+              {room.title}
+            </h3>
+            <div className="flex items-center gap-1 bg-[#FDF8EE] px-1.5 py-0.5 rounded-lg text-xs font-bold text-[#C9A24B] shrink-0">
+              <Star className="w-3 h-3 fill-[#C9A24B] stroke-[#C9A24B]" />
+              <span>{room.rating}</span>
+            </div>
           </div>
 
-          <Link
-            href="/rooms"
-            className="mt-4 md:mt-0 text-sm font-bold text-[#23225C] hover:text-[#6B6FEA] inline-flex items-center gap-1.5 transition-colors group"
-          >
-            <span>View All Categories</span>
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </Link>
-        </div>
+          {/* Location Line */}
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-3 font-normal">
+            <MapPin className="w-3.5 h-3.5 text-[#C9A24B] shrink-0" />
+            <span className="truncate">{room.view}</span>
+          </div>
 
-        {/* Room Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {rooms.map((room) => {
-            const isWishlisted = !!wishlist[room.id];
-            return (
-              <div
-                key={room.id}
-                className="hotel-card group flex flex-col justify-between overflow-hidden"
+          {/* Specs Row: 3-column grid, SHORT text, no wrapping */}
+          <div className="grid grid-cols-3 gap-1 py-2.5 border-y border-slate-100 text-xs text-slate-600 font-medium mb-3">
+            <span className="inline-flex items-center justify-center gap-1 whitespace-nowrap">
+              <Users className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span>{room.capacityText}</span>
+            </span>
+            <span className="inline-flex items-center justify-center gap-1 whitespace-nowrap border-x border-slate-100">
+              <Maximize2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span>{room.sizeText}</span>
+            </span>
+            <span className="inline-flex items-center justify-center gap-1 whitespace-nowrap">
+              <BedDouble className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span>{room.bedText}</span>
+            </span>
+          </div>
+
+          {/* Amenity Chips: max 3 + "+2 more" */}
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {room.amenities.slice(0, 3).map((amenity, i) => (
+              <span
+                key={i}
+                className="px-2 py-0.5 rounded-lg bg-slate-50 text-[11px] font-medium text-slate-600 border border-slate-100"
               >
-                {/* Room Photo Card Header */}
-                <div className="relative h-56 w-full overflow-hidden">
-                  <Image
-                    src={room.image}
-                    alt={room.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                  />
-                  {/* Subtle Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
-
-                  {/* Status Tag Pill (Top Left) */}
-                  <div className="absolute top-3.5 left-3.5">
-                    <span
-                      className={`px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase shadow-md ${room.tagColor}`}
-                    >
-                      {room.tag}
-                    </span>
-                  </div>
-
-                  {/* Wishlist Heart Button (Top Right) */}
-                  <button
-                    type="button"
-                    onClick={(e) => toggleWishlist(room.id, e)}
-                    className="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-slate-700 hover:text-rose-500 hover:bg-white shadow-md transition-all active:scale-90"
-                    aria-label="Save to Wishlist"
-                  >
-                    <Heart
-                      className={`w-4 h-4 transition-colors ${
-                        isWishlisted ? "fill-rose-500 text-rose-500" : ""
-                      }`}
-                    />
-                  </button>
-
-                  {/* View Type Badge (Bottom Left) */}
-                  <div className="absolute bottom-3 left-3.5">
-                    <span className="px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium">
-                      {room.view}
-                    </span>
-                  </div>
-
-                  {/* Rating Badge (Bottom Right) */}
-                  <div className="absolute bottom-3 right-3.5 flex items-center gap-1 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-lg text-xs font-bold text-slate-800">
-                    <Star className="w-3 h-3 fill-amber-400 stroke-amber-500" />
-                    <span>{room.rating}</span>
-                  </div>
-                </div>
-
-                {/* Card Content Body */}
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    {/* Category */}
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#6B6FEA] block mb-1">
-                      {room.category}
-                    </span>
-
-                    {/* Room Title */}
-                    <h3 className="font-serif font-bold text-base text-slate-900 group-hover:text-[#23225C] transition-colors line-clamp-1 mb-2">
-                      {room.title}
-                    </h3>
-
-                    {/* Quick Specs (Capacity, Bed, Size) */}
-                    <div className="flex items-center gap-3 text-xs text-slate-500 pb-3 border-b border-slate-100">
-                      <span className="flex items-center gap-1">
-                        <Users className="w-3.5 h-3.5 text-slate-400" /> {room.capacity}
-                      </span>
-                      <span>·</span>
-                      <span className="flex items-center gap-1">
-                        <Maximize2 className="w-3.5 h-3.5 text-slate-400" /> {room.size}
-                      </span>
-                    </div>
-
-                    {/* Amenity Badges */}
-                    <div className="flex flex-wrap gap-1.5 py-3">
-                      {room.amenities.slice(0, 3).map((amenity, i) => (
-                        <span
-                          key={i}
-                          className="px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-medium text-slate-600"
-                        >
-                          {amenity}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Card Footer: Transparent Pricing & CTA */}
-                  <div className="pt-3 border-t border-slate-100 flex items-end justify-between">
-                    <div>
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-lg font-bold text-[#23225C]">
-                          {formatPrice(room.price)}
-                        </span>
-                        <span className="text-xs text-slate-400 line-through">
-                          {formatPrice(room.originalPrice)}
-                        </span>
-                      </div>
-                      <span className="text-[10px] text-slate-400 block">
-                        + {formatPrice(room.taxes)} taxes / night
-                      </span>
-                    </div>
-
-                    <Link
-                      href={`/rooms/${room.slug}`}
-                      className="btn-navy px-4 py-2 rounded-xl text-xs font-bold shadow-sm shadow-[#23225C]/20 hover:shadow-md transition-all flex items-center gap-1.5"
-                    >
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>Book</span>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                {amenity}
+              </span>
+            ))}
+            {room.amenities.length > 3 && (
+              <span className="px-2 py-0.5 rounded-lg bg-slate-50 text-[11px] font-medium text-slate-400 border border-slate-100">
+                +{room.amenities.length - 3} more
+              </span>
+            )}
+          </div>
         </div>
+
+        {/* 3. Footer: Divider -> Price -> Two Equal Buttons (Pushed with mt-auto) */}
+        <div className="mt-auto pt-3 border-t border-slate-100">
+          {/* Price row */}
+          <div className="mb-3.5 flex items-baseline justify-between">
+            <div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-xl font-bold text-[#1B1B4B]">
+                  {formatPrice(room.price)}
+                </span>
+                <span className="text-xs text-slate-400 line-through">
+                  {formatPrice(room.originalPrice)}
+                </span>
+                <span className="text-xs text-slate-500 font-medium">/night</span>
+              </div>
+              <span className="text-[10px] text-slate-400 block">
+                + {formatPrice(room.taxes)} taxes
+              </span>
+            </div>
+          </div>
+
+          {/* Two Equal Buttons */}
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => onOpen360?.(room.title, room.images[0])}
+              className="min-h-[42px] px-3 py-2 rounded-full text-xs font-bold text-[#1B1B4B] bg-slate-50 hover:bg-[#FDF8EE] hover:text-[#C9A24B] border border-slate-200 transition-all flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap"
+            >
+              <Eye className="w-3.5 h-3.5 text-[#C9A24B]" />
+              <span>360° View</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleWhatsApp}
+              className="min-h-[42px] px-3 py-2 rounded-full text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-emerald-600/20 active:scale-95 whitespace-nowrap"
+            >
+              <WhatsAppIcon className="w-4 h-4" />
+              <span>Book on WhatsApp</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </motion.div>
+  );
+}
+
+export default function FeaturedRooms({ onOpenWhatsApp, onOpen360 }: FeaturedRoomsProps) {
+  const [showAll, setShowAll] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<"All" | "Suite" | "Deluxe" | "Family">("All");
+
+  const categories = ["All", "Suite", "Deluxe", "Family"] as const;
+
+  // Filter logic
+  const allFiltered = activeCategory === "All"
+    ? siteConfig.rooms
+    : siteConfig.rooms.filter((r) => r.category === activeCategory);
+
+  // Show exactly 3 featured unless expanded
+  const displayedRooms = showAll ? allFiltered : allFiltered.slice(0, 3);
+
+  return (
+    <section id="rooms" className="py-14 md:py-20 bg-white border-t border-slate-200/60 scroll-mt-20">
+      <div className="max-w-[1200px] mx-auto px-5 md:px-8">
+        
+        {/* Standard Centered Header Pattern */}
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#C9A24B] mb-2 block">
+            FEATURED ACCOMMODATION
+          </span>
+          <h2 className="text-2xl sm:text-3xl lg:text-[2.4rem] font-serif font-semibold text-[#1B1B4B] tracking-tight leading-[1.15] mb-2">
+            Rooms & Suites
+          </h2>
+          <p className="text-sm sm:text-base text-slate-500 font-normal leading-relaxed">
+            Thoughtfully designed with warm wood finishes, private balconies, and scenic Himalayan vistas.
+          </p>
+
+          {/* Centered filter tabs BELOW header */}
+          {showAll && (
+            <div className="flex items-center justify-center gap-2 mt-6 overflow-x-auto pb-1">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setActiveCategory(cat)}
+                  className={`min-h-[38px] px-4 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 ${
+                    activeCategory === cat
+                      ? "bg-[#1B1B4B] text-white shadow-sm"
+                      : "bg-slate-100 text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  {cat === "All" ? "All Categories" : `${cat}s`}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 3-Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+          {displayedRooms.map((room) => (
+            <RoomCard
+              key={room.id}
+              room={room}
+              onOpenWhatsApp={onOpenWhatsApp}
+              onOpen360={onOpen360}
+            />
+          ))}
+        </div>
+
+        {/* View All Rooms Button */}
+        <div className="text-center mt-10">
+          <button
+            type="button"
+            onClick={() => setShowAll(!showAll)}
+            className="btn-navy px-8 py-3 rounded-full text-xs sm:text-sm font-bold shadow-md shadow-[#1B1B4B]/20 hover:shadow-lg active:scale-95 transition-all inline-flex items-center gap-2 min-h-[44px]"
+          >
+            <span>{showAll ? "Show Top 3 Rooms" : "View All Rooms & Suites"}</span>
+            <ArrowRight className="w-4 h-4 text-[#C9A24B]" />
+          </button>
+        </div>
+
       </div>
     </section>
   );
